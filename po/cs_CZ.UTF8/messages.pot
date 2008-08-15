@@ -1,0 +1,71 @@
+# Czech translation of MyCA.
+# Copyright (C) Medoro s.r.o.
+# Jaroslav Bartoň <djaara@medoro.org>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: myca 1\n"
+"POT-Creation-Date: 2008-08-15 11:27+CEST\n"
+"PO-Revision-Date: 2008-08-14 13:51+CEST\n"
+"Last-Translator: Jaroslav Bartoň <djaara@medoro.org>\n"
+"Language-Team: MyCA CZ team <myca.cz@medoro.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+#: ../createca.py:46 ../createca.py:53
+msgid "Creating directory %s..."
+msgstr "Zakládám adresář %s..."
+
+#: ../createca.py:68
+msgid "Removing directory %s..."
+msgstr "Odstraňuji adresář %s..."
+
+#: ../createca.py:77 ../createca.py:104
+msgid "Removing file %s..."
+msgstr "Odstraňuji soubor %s..."
+
+#: ../createca.py:81
+msgid "Error removing file %s..."
+msgstr "Nelze odstranit soubor %s..."
+
+#: ../createca.py:90 ../createca.py:118 ../createca.py:146
+msgid "N"
+msgstr "N"
+
+#: ../createca.py:91
+msgid "Leaving previous version of CA untouched..."
+msgstr "Nechávám předchozí verzi CA beze změn..."
+
+#: ../createca.py:93 ../createca.py:118 ../createca.py:146
+msgid "y"
+msgstr "a"
+
+#: ../createca.py:94
+msgid "Removing previous version of CA..."
+msgstr "Odstraňuji předchozí verzi CA..."
+
+#: ../createca.py:117
+msgid "FAIL: Previous version of CA exists..."
+msgstr "Selhalo: Byla nalezena předchozí verze CA..."
+
+#: ../createca.py:118
+msgid "Overvrite previous version of CA [%s/%s]"
+msgstr "Přepsat předchozí verzi CA [%s/%s]"
+
+#: ../createca.py:121
+msgid "OK: No previous version of CA exists..."
+msgstr "OK: Žádná předchozí verze CA neexistuje..."
+
+#: ../createca.py:128
+msgid "Creating CA certificate..."
+msgstr ""
+
+#: ../createca.py:143
+msgid "MyCA version"
+msgstr "MyCA verze"
+
+#: ../createca.py:146
+msgid "Remove actual version of CA [%s/%s]"
+msgstr "Odstranit aktuální verzi CA [%s/%s]"
