@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2008-08-14 18:32+CEST\n"
+"POT-Creation-Date: 2008-08-15 11:27+CEST\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,55 +15,59 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: ../createca.py:41 ../createca.py:45
+#: ../createca.py:46 ../createca.py:53
 msgid "Creating directory %s..."
 msgstr ""
 
-#: ../createca.py:53
+#: ../createca.py:68
 msgid "Removing directory %s..."
 msgstr ""
 
-#: ../createca.py:62 ../createca.py:90
+#: ../createca.py:77 ../createca.py:104
 msgid "Removing file %s..."
 msgstr ""
 
-#: ../createca.py:66
+#: ../createca.py:81
 msgid "Error removing file %s..."
 msgstr ""
 
-#: ../createca.py:75 ../createca.py:104
+#: ../createca.py:90 ../createca.py:118 ../createca.py:146
 msgid "N"
 msgstr ""
 
-#: ../createca.py:76
+#: ../createca.py:91
 msgid "Leaving previous version of CA untouched..."
 msgstr ""
 
-#: ../createca.py:78 ../createca.py:104 ../createca.py:129
+#: ../createca.py:93 ../createca.py:118 ../createca.py:146
 msgid "y"
 msgstr ""
 
-#: ../createca.py:79
+#: ../createca.py:94
 msgid "Removing previous version of CA..."
 msgstr ""
 
-#: ../createca.py:103
+#: ../createca.py:117
 msgid "FAIL: Previous version of CA exists..."
 msgstr ""
 
-#: ../createca.py:104
+#: ../createca.py:118
 msgid "Overvrite previous version of CA [%s/%s]"
 msgstr ""
 
-#: ../createca.py:107
+#: ../createca.py:121
 msgid "OK: No previous version of CA exists..."
 msgstr ""
 
-#: ../createca.py:114
+#: ../createca.py:128
 msgid "Creating CA certificate..."
 msgstr ""
 
-#: ../createca.py:126
+#: ../createca.py:143
 msgid "MyCA version"
+msgstr ""
+
+#: ../createca.py:146
+msgid "Remove actual version of CA [%s/%s]"
 msgstr ""
 

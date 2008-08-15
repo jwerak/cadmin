@@ -11,12 +11,17 @@ import readline
 #
 prj_name = 'myca'
 myca_version = '1'
-cadirs = {'CA':'ca', 'SRV':'server', '_SRVN':'server/newcerts', 'WRK':'workstation', '_WRKN':'workstation/newcerts', 'USR':'user', 'CRL':'crl', 'PRV':'private'}
-cafiles = { 'KEY':'cakey.pem', 'REQ':'careq.pem', 'CRT':'cacrt.pem', 'IDX':'index.txt', 'SRL':'serial' }
+cadirs = {'CA':'ca', '_CAN':'ca/newcerts', 'SRV':'server', 'WRK':'workstation', 'USR':'user', 'CRL':'crl', 'PRV':'private'}
+cafiles = { 'KEY':'cakey.pem', 'REQ':'careq.pem', 'CRT':'cacrt.pem', 'IDX':'index.txt', 'IDXA':'index.txt.attr', 'IDXAO':'index.txt.attr.old', 'IDXO':'index.txt.old', 'SRL':'serial', 'SRLO':'serial.old'}
 openssl = 'openssl'
-remove = '--remove'
-days = {'10y':'3652'}
+days = {'10y':'3652', '1y':'366'}
 cfgfile = 'CA.cnf'
+
+#
+# command line parameters
+#
+remove = '--clean'
+help = ['-h', '--help']
 
 #
 # i18n support
@@ -36,15 +41,25 @@ __builtins__.__dict__["ngettext"] = gettext.ngettext
 # create directory structure for CA
 #
 def create_dir_structure():
-	for dir in cadirs:
-		if (dir[0] != '_'):
-			print _("Creating directory %s...") % cadirs[dir];
-			os.mkdir(cadirs[dir]);
-	for dir in cadirs:
-		if (dir[0] == '_'):
-			print _("Creating directory %s...") % cadirs[dir];
-			os.mkdir(cadirs[dir]);
-	open(cafiles['IDX'], 'w').close();
+	for dir in cadirs.values():
+		if ('/' not in dir):
+			print _("Creating directory %s...") % dir
+			try:
+				os.mkdir(dir);
+			except OSError:
+				pass
+	for dir in cadirs.values():
+		if ('/' in dir):
+			print _("Creating directory %s...") % dir
+			try:
+				os.mkdir(dir);
+			except OSError:
+				pass
+	
+	open(cafiles['IDX'], 'w').close()
+	serial = open(cafiles['SRL'], 'w')
+	serial.write('01\n')
+	serial.close()
 
 #
 # remove content of directory
@@ -77,18 +92,17 @@ def remove_previous_ca(retval):
 		sys.exit(1);
 	if (_("y") == retval.lower()):
 		print _("Removing previous version of CA...");
-		for dir in cadirs:
-			if (dir[0] != '_'):
-				remove_dir_content(cadirs[dir]);
+		for dir in cadirs.values():
+			if ('/' not in dir):
+				remove_dir_content(dir);
 	content = []
 	try:
 		content = os.listdir('.');
 		for fod in content:
 			if (os.path.isfile(fod)):
-				for file in cafiles:
-					if (fod.startswith(cafiles[file])):
-						print _("Removing file %s...") % fod
-						os.remove(fod)
+				if (fod in cafiles.values()):
+					print _("Removing file %s...") % fod
+					os.remove(fod)
 	except OSError:
 		print "OSError"
 
@@ -97,11 +111,11 @@ def remove_previous_ca(retval):
 #
 def check_prev_ca():
 	error = 0;
-	for dir in cadirs:
-		if (os.path.isdir(cadirs[dir])): error = 1;
+	for dir in cadirs.values():
+		if (os.path.isdir(dir)): error = 1
 	if (error == 1):
-		print _("FAIL: Previous version of CA exists...");
-		print _("Overvrite previous version of CA [%s/%s]") % (_("y"), _("N")) ,;
+		print _("FAIL: Previous version of CA exists...")
+		print _("Overvrite previous version of CA [%s/%s]") % (_("y"), _("N")) ,
 		remove_previous_ca(raw_input());
 	else:
 		print _("OK: No previous version of CA exists...") ;
@@ -112,10 +126,13 @@ def check_prev_ca():
 def create_new_ca():
 	create_dir_structure();
 	print _("Creating CA certificate...");
-	command = "%s req -config %s -new -keyout %s -out %s" % (openssl, cfgfile, os.path.join(cadirs['PRV'], cafiles['KEY']), cafiles['REQ'])
+	request = os.path.join(cadirs['CA'], cafiles['REQ'])
+	key = os.path.join(cadirs['PRV'], cafiles['KEY'])
+	crt = os.path.join(cadirs['CA'], cafiles['CRT'])
+	command = "%s req -config %s -batch -new -keyout %s -out %s" % (openssl, cfgfile, key, request)
 	print command
 	os.system(command)
-	command = "%s ca -config %s -create_serial -out %s -days %s -batch -keyfile %s -selfsign -extensions v3_ca -infiles %s" % (openssl, cfgfile, cafiles['CRT'], days['10y'], os.path.join(cadirs['PRV'], cafiles['KEY']), cafiles['REQ'])
+	command = "%s ca -config %s -create_serial -out %s -days %s -batch -keyfile %s -selfsign -extensions v3_ca -infiles %s" % (openssl, cfgfile, crt, days['10y'], key, request)
 	print command
 	os.system(command)
 
@@ -126,7 +143,8 @@ Print application name and version
 print _("MyCA version"), myca_version;
 
 if (remove in sys.argv):
-	remove_previous_ca(_("y"));
+	print _("Remove actual version of CA [%s/%s]") % (_("y"), _("N")) ,
+	remove_previous_ca(raw_input());
 else:
 	check_prev_ca();
 	create_new_ca();

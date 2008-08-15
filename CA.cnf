@@ -1,16 +1,16 @@
 [ ca ]
-default_ca	= server_ca		
+default_ca	= ca_ca
 
 [ client_ca ]
 dir             = .
 certs           = $dir/user
-crl_dir         = $dir/user/crl
+crl_dir         = $dir/crl
 database        = $dir/index.txt
 new_certs_dir   = $dir/user/newcerts
 certificate     = $dir/cacert.pem
 serial          = $dir/serial
-crl             = $dir/crl.pem
-private_key     = $dir/cacert.key
+crl             = $dir/crl/crl.pem
+private_key     = $dir/ca/cacert.key
 RANDFILE        = $dir/.rand
 x509_extensions = client_cert
 default_days    = 365
@@ -22,13 +22,13 @@ policy          = policy_client
 [ server_ca ]
 dir             = .
 certs           = $dir/server
-crl_dir         = $dir/server/crl
+crl_dir         = $dir/crl
 database        = $dir/index.txt
 new_certs_dir   = $dir/server/newcerts
 certificate     = $dir/cacert.pem
 serial          = $dir/serial
-crl             = $dir/crl.pem
-private_key     = $dir/cacert.key
+crl             = $dir/crl/crl.pem
+private_key     = $dir/ca/cacert.key
 RANDFILE        = $dir/.rand
 x509_extensions = server_cert
 default_days    = 365
@@ -40,16 +40,16 @@ policy          = policy_server
 [ ca_ca ]
 dir             = .
 certs           = $dir/ca
-crl_dir         = $dir/ca/crl
+crl_dir         = $dir/crl
 database        = $dir/index.txt
 new_certs_dir   = $dir/ca/newcerts
 certificate     = $dir/cacert.pem
 serial          = $dir/serial
-crl             = $dir/crl.pem
-private_key     = $dir/cacert.key
+crl             = $dir/crl/crl.pem
+private_key     = $dir/ca/cacert.key
 RANDFILE        = $dir/.rand
 x509_extensions = v3_ca
-default_days    = 365
+default_days    = 3650
 default_crl_days= 30
 default_md      = sha1
 preserve        = no
@@ -102,8 +102,10 @@ localityName_default		= Pardubice
 organizationalUnitName		= Organizational Unit Name (eg, section)
 organizationalUnitName_default  = CA
 commonName			= Common Name (eg, YOUR name)
+commonName_default		= Jaroslav Barton
 commonName_max			= 64
 emailAddress			= Email Address
+emailAddress_default		= barton@medoro.org
 emailAddress_max		= 40
 
 [ v3_req ]
