@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import re
 import os
 import sys
 import gettext
@@ -12,6 +13,7 @@ import readline
 prj_name = 'myca'
 myca_version = '1'
 cadirs = {'CA':'ca', 'SRV':'server', 'CRL':'crl' }
+cafiles = {'CRL':'ca-crl.crl'}
 openssl = 'openssl'
 days = {'10y':'3652', '1y':'366' }
 cfgfile = 'CA.cnf'
@@ -36,6 +38,11 @@ __builtins__.__dict__["ngettext"] = gettext.ngettext
 # get hostname
 #
 def get_hostname():
+	hostname_re = re.compile('(\w*\.){2}\w*')
+	for hostname in sys.argv:
+		if (hostname_re.match(hostname)):
+			print _("Found hostname %s...") % hostname
+			return(hostname)
 	print _("Server hostname:") ,
 	return(raw_input())
 
@@ -45,6 +52,12 @@ def get_hostname():
 def generate_server_certificate():
 	hostname = get_hostname();
 	filename = os.path.join(cadirs['SRV'], hostname)
+
+	if (os.path.isfile(filename + '.crt')):
+		print _('Previous certificate for %s found...') % hostname
+		print _('Revoke and create new certificate [%s/%s]') % (_('y'), _('N')) ,
+		return
+
 	# create certificate request
 	command = '%s req -config %s -new -nodes -subj "%s=%s" -keyout %s.key -out %s.csr -days %s -verbose' % (openssl, cfgfile, RDN, hostname, filename, filename, days['1y'])
 	print command
@@ -68,6 +81,9 @@ def revoke_server_certificate():
 	filename = os.path.join(cadirs['SRV'], hostname) + '.crt';
 	if (os.path.isfile(filename)):
 		command = '%s ca -config %s -revoke %s' % (openssl, cfgfile, filename);
+		print command
+		os.system(command)
+		command = '%s ca -config %s -gencrl -out %s' % (openssl, cfgfile, os.path.join(cadirs['CA'], cafiles['CRL']))
 		print command
 		os.system(command)
 	else:
