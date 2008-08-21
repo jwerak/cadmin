@@ -6,6 +6,7 @@ import sys
 import gettext
 import locale
 import readline
+import datetime
 
 #
 # configuration variables
@@ -13,12 +14,13 @@ import readline
 prj_name = 'myca'
 myca_version = '1'
 cadirs = {'CA':'ca', 'SRV':'server', 'CRL':'crl' }
-cafiles = {'CRL':'ca-crl.crl'}
+cafiles = {'CRL':'ca-crl.crl', 'IDX':'index.txt'}
 openssl = 'openssl'
 days = {'10y':'3652', '1y':'366' }
 cfgfile = 'CA.cnf'
-RDN = '/C=CZ/ST=Czech Republic/O=Medoro s.r.o/OU=Servers/emailAddress=barton@medoro.org/CN'
+RDN = '/C=CZ/ST=Czech Republic/O=Medoro s.r.o./OU=Servers/emailAddress=barton@medoro.org/CN'
 revoke = '--revoke'
+host_spec = 'host='
 
 #
 # i18n support
@@ -38,13 +40,43 @@ __builtins__.__dict__["ngettext"] = gettext.ngettext
 # get hostname
 #
 def get_hostname():
-	hostname_re = re.compile('(\w*\.){2}\w*')
-	for hostname in sys.argv:
-		if (hostname_re.match(hostname)):
-			print _("Found hostname %s...") % hostname
-			return(hostname)
+	for arg in sys.argv:
+		if (arg.startswith(host_spec)):
+			return(arg[host_spec.__len__() : ])
 	print _("Server hostname:") ,
 	return(raw_input())
+
+#
+# check if certificate for hostname exists and if is valid
+#
+def check_certificate_validity(hostname):
+	if (not os.path.exists(os.path.join(cadirs['SRV'], hostname) + '.crt')):
+		return(True)
+	# V|R valid x revoked valid_to revoked_whe serial ??? RDN
+	RDN = re.compile('(R|V)\t(\d{12}Z)\t(\d{12}Z|)\t(\d{2})\t(\w+)\t(.*)')
+	CN = re.compile('.*CN=(.*)/.*')
+	# read index file and test for hostname
+	index = open(cafiles['IDX'])
+	for line in index.readlines():
+		# parse line
+		rdn = RDN.match(line)
+		# get CN
+		cn = CN.match(rdn.group(6)).group(1)
+		if (cn == hostname and rdn.group(1) == 'V'):
+			# parse validity timestamp
+			tmp = rdn.group(2)
+			validity = datetime.date(2000 + int(tmp[0:2]), int(tmp[2:4]), int(tmp[4:6]))
+			# certificate regeneration period
+			period = datetime.date.today() + datetime.timedelta(31)
+			if (period <= validity):
+				days = validity - datetime.date.today()
+				print '  ', _('Certificate valid to %s, valid for next %s days') % (validity, days.days)
+				return(False)
+			else:
+				print _('Revoking old server certificate for %s') % hostname
+				revoke_server_certificate(hostname)
+				return(True)
+	return(False)
 
 #
 # generate server certificate
@@ -53,10 +85,14 @@ def generate_server_certificate():
 	hostname = get_hostname();
 	filename = os.path.join(cadirs['SRV'], hostname)
 
-	if (os.path.isfile(filename + '.crt')):
-		print _('Previous certificate for %s found...') % hostname
+	# check validity, if certificate exists and is still valid
+	if (not check_certificate_validity(hostname)):
+		print _('Previous certificate for %s is still valid...') % hostname
 		print _('Revoke and create new certificate [%s/%s]') % (_('y'), _('N')) ,
-		return
+		if (raw_input().lower() == _('y')):
+			revoke_server_certificate(hostname)
+		else:
+			return
 
 	# create certificate request
 	command = '%s req -config %s -new -nodes -subj "%s=%s" -keyout %s.key -out %s.csr -days %s -verbose' % (openssl, cfgfile, RDN, hostname, filename, filename, days['1y'])
@@ -76,8 +112,9 @@ def generate_server_certificate():
 #
 # revoke server certificate
 #
-def revoke_server_certificate():
-	hostname = get_hostname()
+def revoke_server_certificate(hostname = None):
+	if hostname is None:
+		hostname = get_hostname();
 	filename = os.path.join(cadirs['SRV'], hostname) + '.crt';
 	if (os.path.isfile(filename)):
 		command = '%s ca -config %s -revoke %s' % (openssl, cfgfile, filename);
@@ -88,6 +125,7 @@ def revoke_server_certificate():
 		os.system(command)
 	else:
 		print _("Server certificate %s was not found...") % filename
+
 
 """
 Print application name and version
