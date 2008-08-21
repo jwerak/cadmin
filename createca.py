@@ -11,8 +11,8 @@ import readline
 #
 prj_name = 'myca'
 myca_version = '1'
-cadirs = {'CA':'ca', '_CAN':'ca/newcerts', 'SRV':'server', 'WRK':'workstation', 'USR':'user', 'CRL':'crl', 'PRV':'private'}
-cafiles = { 'KEY':'cakey.pem', 'REQ':'careq.pem', 'CRT':'cacrt.pem', 'IDX':'index.txt', 'IDXA':'index.txt.attr', 'IDXAO':'index.txt.attr.old', 'IDXO':'index.txt.old', 'SRL':'serial', 'SRLO':'serial.old'}
+cadirs = {'CA':'ca', '_CAN':'ca/newcerts', 'SRV':'server', '_SRVN':'server/newcerts', 'WRK':'workstation', 'USR':'user', 'CRL':'crl'}
+cafiles = { 'KEY':'ca-key.pem', 'REQ':'ca-req.pem', 'CRT':'ca-crt.pem', 'IDX':'index.txt', 'IDXA':'index.txt.attr', 'IDXAO':'index.txt.attr.old', 'IDXO':'index.txt.old', 'SRL':'serial', 'SRLO':'serial.old'}
 openssl = 'openssl'
 days = {'10y':'3652', '1y':'366'}
 cfgfile = 'CA.cnf'
@@ -127,9 +127,9 @@ def create_new_ca():
 	create_dir_structure();
 	print _("Creating CA certificate...");
 	request = os.path.join(cadirs['CA'], cafiles['REQ'])
-	key = os.path.join(cadirs['PRV'], cafiles['KEY'])
+	key = os.path.join(cadirs['CA'], cafiles['KEY'])
 	crt = os.path.join(cadirs['CA'], cafiles['CRT'])
-	command = "%s req -config %s -batch -new -keyout %s -out %s" % (openssl, cfgfile, key, request)
+	command = "%s req -config %s -new -keyout %s -out %s" % (openssl, cfgfile, key, request)
 	print command
 	os.system(command)
 	command = "%s ca -config %s -create_serial -out %s -days %s -batch -keyfile %s -selfsign -extensions v3_ca -infiles %s" % (openssl, cfgfile, crt, days['10y'], key, request)
