@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2008-08-15 11:27+CEST\n"
+"POT-Creation-Date: 2008-08-23 17:25+CEST\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,6 +14,53 @@ msgstr ""
 "Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.5\n"
 
+
+#: ../certs.py:82 ../cln.py:82 ../srv.py:82
+msgid "Certificate valid to %s, valid for next %s days"
+msgstr ""
+
+#: ../certs.py:85 ../cln.py:85 ../srv.py:85
+msgid "Revoking old certificate for %s"
+msgstr ""
+
+#: ../certs.py:98 ../cln.py:98 ../srv.py:98
+msgid "Previous certificate for %s is still valid..."
+msgstr ""
+
+#: ../certs.py:99 ../certs.py:100 ../cln.py:99 ../cln.py:100 ../createca.py:93
+#: ../createca.py:118 ../createca.py:146 ../srv.py:99 ../srv.py:100
+msgid "y"
+msgstr ""
+
+#: ../certs.py:99 ../cln.py:99 ../createca.py:90 ../createca.py:118
+#: ../createca.py:146 ../srv.py:99
+msgid "N"
+msgstr ""
+
+#: ../certs.py:99 ../cln.py:99 ../srv.py:99
+msgid "Revoke and create new certificate [%s/%s]"
+msgstr ""
+
+#: ../certs.py:133 ../cln.py:133 ../srv.py:133
+msgid "Server certificate %s was not found..."
+msgstr ""
+
+#: ../certs.py:153 ../certs.py:167 ../cln.py:153 ../cln.py:167 ../srv.py:153
+#: ../srv.py:167
+msgid "Done..."
+msgstr ""
+
+#: ../certs.py:172 ../cln.py:172 ../createca.py:143 ../srv.py:172
+msgid "MyCA version"
+msgstr ""
+
+#: ../certs.py:175 ../cln.py:175 ../srv.py:175
+msgid "Running program in %s mode"
+msgstr ""
+
+#: ../certs.py:178 ../cln.py:178 ../srv.py:178
+msgid "Unknown program mode: %s"
+msgstr ""
 
 #: ../createca.py:46 ../createca.py:53
 msgid "Creating directory %s..."
@@ -31,16 +78,8 @@ msgstr ""
 msgid "Error removing file %s..."
 msgstr ""
 
-#: ../createca.py:90 ../createca.py:118 ../createca.py:146
-msgid "N"
-msgstr ""
-
 #: ../createca.py:91
 msgid "Leaving previous version of CA untouched..."
-msgstr ""
-
-#: ../createca.py:93 ../createca.py:118 ../createca.py:146
-msgid "y"
 msgstr ""
 
 #: ../createca.py:94
@@ -61,10 +100,6 @@ msgstr ""
 
 #: ../createca.py:128
 msgid "Creating CA certificate..."
-msgstr ""
-
-#: ../createca.py:143
-msgid "MyCA version"
 msgstr ""
 
 #: ../createca.py:146

@@ -11,7 +11,7 @@ import readline
 #
 prj_name = 'myca'
 myca_version = '1'
-cadirs = {'CA':'ca', '_CAN':'ca/newcerts', 'SRV':'server', '_SRVN':'server/newcerts', 'WRK':'workstation', 'USR':'user', 'CRL':'crl'}
+cadirs = {'CA':'ca', '_CAN':'ca/newcerts', 'SRV':'server', '_SRVN':'server/newcerts', 'WRK':'workstation', 'USR':'user', '_USRN':'user/newcerts', 'CRL':'crl'}
 cafiles = { 'KEY':'ca-key.pem', 'REQ':'ca-req.pem', 'CRT':'ca-crt.pem', 'IDX':'index.txt', 'IDXA':'index.txt.attr', 'IDXAO':'index.txt.attr.old', 'IDXO':'index.txt.old', 'SRL':'serial', 'SRLO':'serial.old'}
 openssl = 'openssl'
 days = {'10y':'3652', '1y':'366'}

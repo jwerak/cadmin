@@ -13,7 +13,7 @@ crl             = $dir/crl/crl.pem
 private_key     = $dir/ca/ca-key.pem
 RANDFILE        = $dir/.rand
 x509_extensions = client_cert
-default_days    = 365
+default_days    = 366
 default_crl_days= 30
 default_md      = sha1
 preserve        = no
@@ -31,7 +31,7 @@ crl             = $dir/crl/crl.pem
 private_key     = $dir/ca/ca-key.pem
 RANDFILE        = $dir/.rand
 x509_extensions = server_cert
-default_days    = 365
+default_days    = 366
 default_crl_days= 30
 default_md      = sha1
 preserve        = no
@@ -102,7 +102,7 @@ localityName_default		= Pardubice
 organizationalUnitName		= Organizational Unit Name (eg, section)
 organizationalUnitName_default  = CA
 commonName			= Common Name (eg, YOUR name)
-commonName_default		= Jaroslav Barton
+commonName_default		= Medoro s.r.o. CA
 commonName_max			= 64
 emailAddress			= Email Address
 emailAddress_default		= barton@medoro.org
@@ -122,12 +122,12 @@ unstructuredName		= An optional company name
 basicConstraints	= CA:FALSE
 nsCertType		= client, email
 nsComment		= "Medoro s.r.o. Certificate"
-keyUsage		= nonRepudiation, digitalSignature, keyEncipherment
+keyUsage		= nonRepudiation, digitalSignature, keyEncipherment, dataEncipherment
 subjectKeyIdentifier	= hash
 authorityKeyIdentifier	= keyid,issuer:always
 subjectAltName		= email:copy
 issuerAltName		= issuer:copy
-nsCaRevocationUrl	= http://ca.medoro.org/client.crl
+nsCaRevocationUrl	= http://ca.medoro.org/cacrl.crl
 
 [ server_cert ]
 basicConstraints	= CA:FALSE
@@ -137,7 +137,7 @@ subjectKeyIdentifier	= hash
 authorityKeyIdentifier	= keyid,issuer:always
 subjectAltName		= email:copy
 issuerAltName		= issuer:copy
-nsCaRevocationUrl       = http://ca.medoro.org/server.crl
+nsCaRevocationUrl       = http://ca.medoro.org/cacrl.crl
 
 [ v3_ca ]
 nsComment		= "Medoro s.r.o. Certificate"
@@ -148,7 +148,7 @@ keyUsage		= keyCertSign, cRLSign
 nsCertType		= sslCA, emailCA
 subjectAltName		= email:copy
 issuerAltName		= issuer:copy
-nsCaRevocationUrl       = http://ca.medoro.org/ca.crl
+nsCaRevocationUrl       = http://ca.medoro.org/cacrl.crl
 
 [ crl_ext ]
 authorityKeyIdentifier	= keyid:always,issuer:always
