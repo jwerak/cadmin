@@ -13,21 +13,24 @@ import datetime
 #
 prj_name = 'myca'
 myca_version = '1'
-cadirs = {'CA':'ca', 'SRV':'server', 'CRL':'crl', 'CLN':'user' }
-cafiles = {'CRL':'ca-crl.crl', 'IDX':'index.txt', 'CRT':'ca-crt.pem'}
+cadirs = {'CA':'ca', 'SRV':'server', 'CRL':'crl', 'CLN':'user', 'WRK':'workstation'}
+cafiles = {'CRL':'ca-crl.crl', 'CRLT':'ca-crl.pem', 'IDX':'index.txt', 'CRT':'ca-crt.pem'}
 openssl = 'openssl'
 days = {'10y':'3652', '1y':'366' }
+cfgfile_def = 'CA.cnf.def'
 cfgfile = 'CA.cnf'
 rdns = {'SRV':'/C=CZ/ST=Czech Republic/O=Medoro s.r.o./OU=Servers/emailAddress=barton@medoro.org/CN=%s',
-	'CLN':'/C=CZ/ST=Czech Republic/O=Medoro s.r.o/OU=Employee/emailAddress=%s/CN=%s'}
+	'CLN':'/C=CZ/ST=Czech Republic/O=Medoro s.r.o./OU=Employee/emailAddress=%s/CN=%s',
+	'WRK':'/C=CZ/ST=Czech Republic/O=Medoro s.r.o./OU=Workstations/emailAddress=barton@medoro.org/CN=%s'}
 revoke = '--revoke'
 host_spec = ['host=', 'Domain name:']
+dns_spec = ['dns=', 'Aliases (space separated):'];
 mail_spec = ['email=', 'E-mail address:']
 name_spec = ['name=', 'First and last name:']
 login_spec = ['login=', 'Logon name:']
 
-cfgfile_part = {'SRV':'server_ca', 'CLN':'client_ca'}
-modes = ['SRV', 'CLN']
+cfgfile_part = {'SRV':'server_ca', 'CLN':'client_ca', 'WRK':'workstation_ca'}
+modes = ['SRV', 'CLN', 'WRK']
 basename = ''
 
 #
@@ -52,6 +55,7 @@ def get_user_input(fmt):
 		if (arg.startswith(fmt[0])):
 			return(arg[fmt[0].__len__() : ])
 	print _(fmt[1]) ,
+
 	return(raw_input())
 
 
@@ -60,7 +64,7 @@ def get_user_input(fmt):
 #
 def check_certificate_validity(fname, common_name):
 	print common_name
-	if (not os.path.exists(os.path.join(cadirs[basename], fname) + '.crt')):
+	if (not os.path.exists(os.path.join(cadirs[basename], fname + '.crt'))):
 		return(True)
 	# V|R valid x revoked valid_to revoked_whe serial ??? RDN
 	RDN = re.compile('(R|V)\t(\d{12}Z)\t(\d{12}Z|)\t([0-9A-Fa-f]{2})\t(\w+)\t(.*)')
@@ -85,15 +89,15 @@ def check_certificate_validity(fname, common_name):
 				return(False)
 			else:
 				print _('Revoking old certificate for %s') % common_name 
-				revoke_certificate(common_name)
+				revoke_certificate(fname)
 				return(True)
 	return(True)
 
 #
 # generate server certificate
 #
-def generate_certificate(fname, common_name, RDN):
-	filename = os.path.join(cadirs[basename], fname)
+def generate_certificate(fname, common_name, alt_names, RDN):
+	filename = os.path.join(cadirs[basename], re.escape(fname))
 
 	# check validity, if certificate exists and is still valid
 	if (not check_certificate_validity(fname, common_name)):
@@ -103,6 +107,13 @@ def generate_certificate(fname, common_name, RDN):
 			revoke_certificate(fname)
 		else:
 			return
+
+	command = 'cp %s %s' % (cfgfile_def, cfgfile)
+	os.system(command)
+
+	if (alt_names is not None):
+		command = 'sed -i "s/__REPLACE__/%s/" %s' % (alt_names, cfgfile)
+		os.system(command);
 
 	# create certificate request
 	command = '%s req -config %s -verbose -new -nodes -subj "%s" -keyout %s.key -out %s.csr' % (openssl, cfgfile, RDN, filename, filename)
@@ -125,10 +136,13 @@ def generate_certificate(fname, common_name, RDN):
 def revoke_certificate(name):
 	filename = os.path.join(cadirs[basename], name) + '.crt';
 	if (os.path.isfile(filename)):
-		command = '%s ca -config %s -revoke %s' % (openssl, cfgfile, filename);
+		command = '%s ca -config %s -revoke %s' % (openssl, cfgfile, re.escape(filename));
 		print command
 		os.system(command)
-		command = '%s ca -config %s -gencrl -out %s' % (openssl, cfgfile, os.path.join(cadirs['CA'], cafiles['CRL']))
+		command = '%s ca -config %s -gencrl -out %s' % (openssl, cfgfile, os.path.join(cadirs['CA'], cafiles['CRLT']))
+		print command
+		os.system(command)
+		command = '%s crl -in %s -outform DER -out %s' % (openssl, os.path.join(cadirs['CA'], cafiles['CRLT']), os.path.join(cadirs['CA'], cafiles['CRL']))
 		print command
 		os.system(command)
 	else:
@@ -150,8 +164,34 @@ def srv():
 	if (revoke in sys.argv):
 		revoke_certificate(name)
 	else:
+		readedAliases = get_user_input(dns_spec)
 		RDN = rdns[basename] % (name)
-		generate_certificate(name, name, RDN)
+		aliases = readedAliases.split(' ')
+		first = None
+		dnss = ""
+		for alias in aliases:
+			ip = re.compile('\d{1,3}(\.\d{1,3}){3}')
+			m = ip.match(alias)
+			if first:
+				dnss += ","
+			else:
+				first = 1
+			if m:
+				dnss += "IP:%s" % alias
+			else:
+				dnss += "DNS:%s" %alias
+		if dnss.endswith('DNS:'):
+			dnss = "email:copy"
+		generate_certificate(name, name, dnss, RDN)
+	print _('Done...')
+
+def wrk():
+	name = get_user_input(host_spec)
+	if (revoke in sys.argv):
+		revoke_certificate(name)
+	else:
+		RDN = rdns[basename] % (name)
+		generate_certificate(name, name, None, RDN)
 	print _('Done...')
 
 #
@@ -174,7 +214,7 @@ def cln():
 		name = get_user_input(name_spec)
 		mail = get_user_input(mail_spec)
 		RDN = rdns[basename] % (mail, name)
-		generate_certificate(login, name, RDN)
+		generate_certificate(login, name, None, RDN)
 		export_cert(login)
 	print _('Done...')
 
