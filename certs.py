@@ -19,9 +19,9 @@ openssl = 'openssl'
 days = {'10y':'3652', '1y':'366' }
 cfgfile_def = 'CA.cnf.def'
 cfgfile = 'CA.cnf'
-rdns = {'SRV':'/C=CZ/ST=Czech Republic/O=Medoro s.r.o./OU=Servers/emailAddress=barton@medoro.org/CN=%s',
-	'CLN':'/C=CZ/ST=Czech Republic/O=Medoro s.r.o./OU=Employee/emailAddress=%s/CN=%s',
-	'WRK':'/C=CZ/ST=Czech Republic/O=Medoro s.r.o./OU=Workstations/emailAddress=barton@medoro.org/CN=%s'}
+rdns = {'SRV':'/C=CZ/ST=State/O=Organization/OU=Servers/emailAddress=<emailAddress>/CN=%s',
+	'CLN':'/C=CZ/ST=State/O=Organization/OU=Employee/emailAddress=%s/CN=%s',
+	'WRK':'/C=CZ/ST=State/O=Organization/OU=Workstations/emailAddress=<emailAddress>/CN=%s'}
 revoke = '--revoke'
 host_spec = ['host=', 'Domain name:']
 dns_spec = ['dns=', 'Aliases (space separated):'];

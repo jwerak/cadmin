@@ -31,7 +31,7 @@ crl             = $dir/crl/crl.pem
 private_key     = $dir/ca/ca-key.pem
 RANDFILE        = $dir/.rand
 x509_extensions = server_cert
-default_days    = 366
+default_days    = 1825
 default_crl_days= 30
 default_md      = sha1
 preserve        = no
@@ -117,22 +117,22 @@ req_extensions = v3_req
 
 [ req_distinguished_name ]
 countryName			= Country Name (2 letter code)
-countryName_default		= CZ
+countryName_default		= 
 countryName_min			= 2
 countryName_max			= 2
 stateOrProvinceName		= State or Province Name (full name)
-stateOrProvinceName_default	= Czech Republic
+stateOrProvinceName_default	= 
 localityName			= Locality Name (eg, city)
-localityName_default		= Pardubice
+localityName_default		= 
 0.organizationName		= Organization Name (eg, company)
-0.organizationName_default	= Medoro s.r.o.
+0.organizationName_default	= 
 organizationalUnitName		= Organizational Unit Name (eg, section)
 organizationalUnitName_default  = CA
 commonName			= Common Name (eg, YOUR name)
-commonName_default		= Medoro s.r.o. CA
+commonName_default		= 
 commonName_max			= 64
 emailAddress			= Email Address
-emailAddress_default		= barton@medoro.org
+emailAddress_default		= 
 emailAddress_max		= 40
 
 [ req_attributes ]
@@ -144,38 +144,38 @@ unstructuredName		= An optional company name
 [ client_cert ]
 basicConstraints	= CA:FALSE
 nsCertType		= client, email, objsign
-nsComment		= "Medoro s.r.o. Certificate"
+nsComment		= "Client Certificate"
 keyUsage		= nonRepudiation, digitalSignature, keyEncipherment, dataEncipherment
 extendedKeyUsage	= codeSigning, emailProtection, clientAuth
 subjectKeyIdentifier	= hash
 authorityKeyIdentifier	= keyid,issuer:always
 subjectAltName		= email:copy
 issuerAltName		= issuer:copy
-nsCaRevocationUrl	= http://ca.medoro.org/cacrl.crl
+nsCaRevocationUrl	= http://<domain>/cacrl.crl
 
 [ server_cert ]
 basicConstraints	= CA:FALSE
 nsCertType		= server, client
-nsComment		= "Medoro s.r.o. Certificate"
+nsComment		= "Server Certificate"
 subjectKeyIdentifier	= hash
 authorityKeyIdentifier	= keyid,issuer:always
 subjectAltName		= __REPLACE__
 issuerAltName		= issuer:copy
-nsCaRevocationUrl       = http://ca.medoro.org/cacrl.crl
+nsCaRevocationUrl       = http://<domain>/cacrl.crl
 
 [ workstation_cert ]
 basicConstraints        = CA:FALSE
 nsCertType              = client
-nsComment               = "Medoro s.r.o. Certificate"
+nsComment               = "Workstation Certificate"
 subjectKeyIdentifier    = hash
 authorityKeyIdentifier  = keyid,issuer:always
 subjectAltName          = email:copy
 issuerAltName           = issuer:copy
-nsCaRevocationUrl       = http://ca.medoro.org/cacrl.crl
+nsCaRevocationUrl       = http://<domain>/cacrl.crl
 
 
 [ v3_ca ]
-nsComment		= "Medoro s.r.o. Certificate"
+nsComment		= "Certificate"
 subjectKeyIdentifier	= hash
 authorityKeyIdentifier	= keyid:always,issuer:always
 basicConstraints	= critical,CA:true
@@ -183,7 +183,7 @@ keyUsage		= keyCertSign, cRLSign
 nsCertType		= sslCA, emailCA
 subjectAltName		= email:copy
 issuerAltName		= issuer:copy
-nsCaRevocationUrl       = http://ca.medoro.org/cacrl.crl
+nsCaRevocationUrl       = http://<domain>/cacrl.crl
 
 [ crl_ext ]
 authorityKeyIdentifier	= keyid:always,issuer:always
