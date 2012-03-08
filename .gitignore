@@ -1,1 +1,9 @@
 *~
+*.pyc
+index.*
+CA.cnf
+serial*
+ca
+server
+*.bak
+srv.py

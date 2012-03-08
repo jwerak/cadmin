@@ -8,6 +8,14 @@ import locale
 import readline
 import datetime
 
+from default_settings import *
+
+try:
+	from settings import *
+except ImportError:
+	pass
+
+
 #
 # configuration variables
 #
@@ -19,9 +27,9 @@ openssl = 'openssl'
 days = {'10y':'3652', '1y':'366' }
 cfgfile_def = 'CA.cnf.def'
 cfgfile = 'CA.cnf'
-rdns = {'SRV':'/C=CZ/ST=State/O=Organization/OU=Servers/emailAddress=<emailAddress>/CN=%s',
-	'CLN':'/C=CZ/ST=State/O=Organization/OU=Employee/emailAddress=%s/CN=%s',
-	'WRK':'/C=CZ/ST=State/O=Organization/OU=Workstations/emailAddress=<emailAddress>/CN=%s'}
+rdns = {'SRV':'/C=CZ/ST=%s/O=%s/OU=Servers/emailAddress=%s/CN=%%s' % (STATE, ORGANIZATION, ADMIN_EMAIL),
+	'CLN':'/C=CZ/ST=%s/O=%s/OU=Employee/emailAddress=%%s/CN=%%s' % (STATE, ORGANIZATION),
+	'WRK':'/C=CZ/ST=%s/O=%s/OU=Workstations/emailAddress=%s/CN=%%s' % (STATE, ORGANIZATION, ADMIN_EMAIL)}
 revoke = '--revoke'
 host_spec = ['host=', 'Domain name:']
 dns_spec = ['dns=', 'Aliases (space separated):'];
@@ -112,7 +120,7 @@ def generate_certificate(fname, common_name, alt_names, RDN):
 	os.system(command)
 
 	if (alt_names is not None):
-		command = 'sed -i "s/__REPLACE__/%s/" %s' % (alt_names, cfgfile)
+		command = 'sed -i "" "s/__REPLACE__/%s/" %s' % (alt_names, cfgfile)
 		os.system(command);
 
 	# create certificate request
