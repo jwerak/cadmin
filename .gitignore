@@ -7,5 +7,7 @@ ca
 server
 *.bak
 srv.py
+cln.py
+wrk.py
 settings.py
 CA.cnf.def

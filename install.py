@@ -64,3 +64,7 @@ if (not os.path.isfile("settings.py")):
 	settings.write("ORGANIZATION=\"%s\"\n" % (company));
 	settings.write("ADMIN_EMAIL=\"%s\"\n" % (admin_email));
 	settings.close();
+
+	os.system('ln -s certs.py cln.py');
+	os.system('ln -s certs.py wrk.py');
+	os.system('ln -s certs.py srv.py');
