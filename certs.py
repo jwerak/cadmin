@@ -9,6 +9,7 @@ import readline
 import datetime
 
 from default_settings import *
+from utils import *
 
 try:
 	from settings import *
@@ -120,8 +121,7 @@ def generate_certificate(fname, common_name, alt_names, RDN):
 	os.system(command)
 
 	if (alt_names is not None):
-		command = 'sed -i "" "s/__REPLACE__/%s/" %s' % (alt_names, cfgfile)
-		os.system(command);
+		replaceAll(cfgfile, "__REPLACE__", alt_names);
 
 	# create certificate request
 	command = '%s req -config %s -verbose -new -nodes -subj "%s" -keyout %s.key -out %s.csr' % (openssl, cfgfile, RDN, filename, filename)
