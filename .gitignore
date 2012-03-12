@@ -7,3 +7,4 @@ ca
 server
 *.bak
 srv.py
+settings.py
