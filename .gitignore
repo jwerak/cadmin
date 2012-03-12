@@ -8,3 +8,4 @@ server
 *.bak
 srv.py
 settings.py
+CA.cnf.def
