@@ -4,6 +4,7 @@ index.*
 CA.cnf
 serial*
 ca
+user
 server
 *.bak
 srv.py
