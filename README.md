@@ -4,22 +4,22 @@ CAdmin is tool that should help maintain simple certification authority.
 # Usage:
 * Preconfigure CA
 
-    ./install.py
+    * ./install.py
 
 * Create CA
 
-    cp CA.cnf.def CA.cnf
-    ./createca.py
+    * cp CA.cnf.def CA.cnf
+    * ./createca.py
     
 
 * Create client certificate
 
-    ./cln.py
+    * ./cln.py
 
 * Create server certificate
-
-    ./srv.py
+    
+    * ./srv.py
 
 * Create workstation certificate
 
-    ./wrk.py
+    * ./wrk.py
