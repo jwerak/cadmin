@@ -8,7 +8,9 @@ CAdmin is tool that should help maintain simple certification authority.
 
 * Create CA
 
+    cp CA.cnf.def CA.cnf
     ./createca.py
+    
 
 * Create client certificate
 
